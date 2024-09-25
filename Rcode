@@ -1,0 +1,172 @@
+setwd("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/niche_modelling")
+install.packages("biomod2", dependencies = TRUE)
+install.packages("rasterVis")
+install.packages("geodata")
+
+library(biomod2)
+library(ggplot2)
+library(gridExtra)
+library(raster)
+library(rasterVis)
+library(geodata)
+library(tidyr)
+
+
+
+
+#open the raster from the directory without downloading it everytime
+
+
+bio2<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio2_studyarea_ext.tif"))
+bio10<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio10_studyarea_ext.tif"))
+bio11<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio11_studyarea_ext.tif"))
+bio15<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio15_studyarea_ext.tif"))
+bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio18_studyarea_ext.tif"))
+bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio19_studyarea_ext.tif"))
+
+
+names(bio2) = 'BIO2'
+names(bio10) = 'BIO10'
+names(bio11) = 'BIO11'
+names(bio15) = 'BIO15'
+names(bio18) = 'BIO18'              
+names(bio19) = 'BIO19'
+
+
+#stack bio clim variables
+
+bioclim_current<- stack(c(bio2, bio10, bio11, bio18, bio19))
+
+plot(bioclim_sub,add = TRUE, xlim = c(-18,15), ylim = c(20, 55))
+
+
+
+#spatial grid
+
+coord_r<-rasterToPoints(bioclim_sub, spatial = TRUE)
+map_pts<-data.frame(x = coordinates(coord_r)[,1], y=coordinates(coord_r)[,2], coord_r@data)
+
+#format data with pseudo absence
+locations = read.csv("locations.csv", header=TRUE)
+Olive_data = BIOMOD_FormatingData(resp.var=locations$P.A, 
+                                  expl.var=bioclim_current,
+                                  resp.xy= locations[,c("long","lat")],
+                                  resp.name = "P.A",
+                                  PA.nb.rep = 3,
+                                  PA.nb.absence = 100,
+                                  PA.strategy = "sre",
+                                  PA.sre.quant = 0.0025,
+                                  filter.raster = TRUE)
+plot(Olive_data)
+jpeg(file="PA_test.jpg")
+plot(Olive_data)
+dev.off()
+
+#run individual model
+
+Olive_niches<- BIOMOD_Modeling(bm.format = Olive_data,
+                                                   modeling.id = 'Single_Olive_niche',
+                                                   models = c('GLM', 'MARS','MAXNET', 'RF'),
+                                                   CV.strategy = 'random',
+                                                   CV.nb.rep = 3,
+                                                   CV.perc = 0.75,
+                                                   OPT.strategy = "default",
+                                                   metric.eval = c('TSS','ROC'),
+                                                   var.import = 2,
+                                                   seed.val = 42,
+                               weights = NULL)
+
+
+Olive_niches
+
+# Get evaluation scores & variables importance
+get_evaluations(Olive_niches)
+get_variables_importance(Olive_niches)
+var_imp<-data.frame(get_variables_importance(Olive_niches))
+write.table(var_imp, 'variqnce.importance')
+
+
+# Represent evaluation scores & variables importance
+bm_PlotEvalMean(bm.out = Olive_niches)
+bm_PlotEvalBoxplot(bm.out = Olive_niches, group.by = c('algo', 'algo'))
+bm_PlotVarImpBoxplot(bm.out = Olive_niches, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotResponseCurves(bm.out = Olive_niches, 
+                      models.chosen = get_built_models(Olive_niches)[c(121:130)],
+                      fixed.var = 'mean')
+
+
+# Project single models for all raster point using the same env variable of PA dataset
+
+get_built_models(Olive_niches, full.name = NULL, PA = NULL, run = NULL, algo = NULL)#selecting models
+
+myBiomodProj <- BIOMOD_Projection(bm.mod = Olive_niches,
+                                  proj.name = 'Current',
+                                  new.env = bioclim_current,
+                                  models.chosen = 'all',
+                                  metric.binary = c('TSS', 'ROC'),
+                                  metric.filter = c('TSS', 'ROC'),
+                                  build.clamping.mask = FALSE)
+myBiomodProj
+plot(myBiomodProj) #not enough RAMt
+
+prova<- raster(paste("C:/Users/rocchetti/OneDrive - Cirad/Desktop/Olive_ENM/P.A/proj_current/proj_Current_P.A_ensemble.tif"))
+plot(prova)
+
+
+
+
+# Model ensemble models
+
+get_built_models(Olive_niches , full.name = NULL, PA = NULL, run = NULL, algo = c('RF', 'GLM'))
+
+Olive_EM <- BIOMOD_EnsembleModeling(bm.mod = Olive_niches,
+                                      models.chosen = 'all',
+                                      em.by = 'all',
+                                      em.algo = c('EMmean','EMcv', 'EMwmean'),
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.85),
+                                      metric.eval = c('TSS', 'ROC'),
+                                      var.import = 3,
+                                      EMci.alpha = 0.05,
+                                      EMwmean.decay = 'proportional')
+
+bm_PlotVarImpBoxplot(bm.out = Olive_EM, group.by = c('expl.var', 'algo', 'merged.by.run'))
+
+bm_PlotResponseCurves(bm.out = Olive_EM, 
+                      models.chosen = get_built_models(Olive_EM)[c(1, 6, 7)],
+                      fixed.var = 'median')
+
+
+
+# Project single models
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+                                  proj.name = 'Current',
+                                  new.env = myExpl,
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
+                                  build.clamping.mask = TRUE)
+myBiomodProj
+plot(myBiomodProj)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM, 
+                                             bm.proj = myBiomodProj,
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
+
+prova<- raster(paste("C:/Users/rocchetti/OneDrive - Cirad/Desktop/Olive_ENM/P.A/proj_current/proj_Current_P.A_ensemble.tif"))
+plot(prova)
