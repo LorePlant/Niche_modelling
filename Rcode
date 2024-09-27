@@ -105,7 +105,7 @@ myBiomodProj <- BIOMOD_Projection(bm.mod = Olive_niches,
                                   models.chosen = 'all',
                                   metric.binary = c('TSS', 'ROC'),
                                   metric.filter = c('TSS', 'ROC'),
-                                  build.clamping.mask = FALSE)
+                                  build.clamping.mask = TRUE)
 myBiomodProj
 plot(myBiomodProj) #not enough RAMt
 
