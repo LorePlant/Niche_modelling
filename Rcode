@@ -66,7 +66,7 @@ dev.off()
 
 Olive_niches<- BIOMOD_Modeling(bm.format = Olive_data,
                                                    modeling.id = 'Single_Olive_niche',
-                                                   models = c('GLM', 'MARS','MAXNET', 'RF'),
+                                                   models = c('GLM', 'RF'),
                                                    CV.strategy = 'random',
                                                    CV.nb.rep = 3,
                                                    CV.perc = 0.75,
