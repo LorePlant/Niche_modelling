@@ -60,7 +60,7 @@ jpeg(file="PA_test.jpg")
 plot(Olive_data)
 dev.off()
 
-#run individual model
+###########run individual model
 
 Olive_niches<- BIOMOD_Modeling(bm.format = Olive_data,
                                                    modeling.id = 'Single_Olive_niche',
@@ -93,7 +93,7 @@ bm_PlotResponseCurves(bm.out = Olive_niches,
                       fixed.var = 'mean')
 
 
-# Project single models for all raster point using the same env variable of PA dataset
+########### Project single models for all raster point using the same env variable of PA dataset
 
 get_built_models(Olive_niches, full.name = NULL, PA = NULL, run = NULL, algo = NULL)#selecting models
 
@@ -113,7 +113,7 @@ plot(prova)
 
 
 
-# Model ensemble models
+#################### Model ensemble models
 
 get_built_models(Olive_niches , full.name = NULL, PA = NULL, run = NULL, algo = c('RF', 'GLM'))
 
@@ -134,37 +134,16 @@ bm_PlotResponseCurves(bm.out = Olive_EM,
                       models.chosen = get_built_models(Olive_EM)[c(1, 6, 7)],
                       fixed.var = 'median')
 
+########################### Project ensamble models
 
-
-# Project single models
-myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-                                  proj.name = 'Current',
-                                  new.env = myExpl,
-                                  models.chosen = 'all',
-                                  metric.binary = 'all',
-                                  metric.filter = 'all',
-                                  build.clamping.mask = TRUE)
-myBiomodProj
-plot(myBiomodProj)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM, 
-                                             bm.proj = myBiomodProj,
+myBiomodEMProj   <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM,
+                                             proj.name = 'CurrentEM',
+                                             new.env = bioclim_current,
                                              models.chosen = 'all',
                                              metric.binary = 'all',
                                              metric.filter = 'all')
+myBiomodEMProj
+plot(myBiomodEMProj)
 
 prova<- raster(paste("C:/Users/rocchetti/OneDrive - Cirad/Desktop/Olive_ENM/P.A/proj_current/proj_Current_P.A_ensemble.tif"))
 plot(prova)
