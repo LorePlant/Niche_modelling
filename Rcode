@@ -53,10 +53,8 @@ Olive_data = BIOMOD_FormatingData(resp.var=locations$P.A,
                                   resp.xy= locations[,c("long","lat")],
                                   resp.name = "P.A",
                                   PA.nb.rep = 3,
-                                  PA.nb.absence = 100,
-                                  PA.strategy = "sre",
-                                  PA.sre.quant = 0.0025,
-                                  filter.raster = TRUE)
+                                  PA.nb.absence = 500,
+                                  PA.strategy = "random")
 plot(Olive_data)
 jpeg(file="PA_test.jpg")
 plot(Olive_data)
@@ -68,8 +66,8 @@ Olive_niches<- BIOMOD_Modeling(bm.format = Olive_data,
                                                    modeling.id = 'Single_Olive_niche',
                                                    models = c('GLM', 'RF'),
                                                    CV.strategy = 'random',
-                                                   CV.nb.rep = 3,
-                                                   CV.perc = 0.75,
+                                                  CV.nb.rep = 2,
+                                                   CV.perc = 0.80,
                                                    OPT.strategy = "default",
                                                    metric.eval = c('TSS','ROC'),
                                                    var.import = 2,
