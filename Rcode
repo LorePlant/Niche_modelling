@@ -120,7 +120,7 @@ get_built_models(Olive_niches , full.name = NULL, PA = NULL, run = NULL, algo = 
 Olive_EM <- BIOMOD_EnsembleModeling(bm.mod = Olive_niches,
                                       models.chosen = 'all',
                                       em.by = 'all',
-                                      em.algo = c('EMmean','EMcv', 'EMwmean'),
+                                      em.algo = c('EMcv', 'EMwmean'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.85),
                                       metric.eval = c('TSS', 'ROC'),
@@ -135,10 +135,51 @@ bm_PlotResponseCurves(bm.out = Olive_EM,
                       fixed.var = 'median')
 
 ########################### Project ensamble models
+########## Current environmental variable
 
 myBiomodEMProj   <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM,
                                              proj.name = 'CurrentEM',
                                              new.env = bioclim_current,
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
+myBiomodEMProj
+plot(myBiomodEMProj)
+
+prova<- raster(paste("C:/Users/rocchetti/OneDrive - Cirad/Desktop/Olive_ENM/P.A/proj_current/proj_Current_P.A_ensemble.tif"))
+plot(prova)
+
+
+########### future climatic scenario
+
+### load future environmental variables
+
+
+bio2<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio2_2100_IPSLssp585.tif"))
+bio10<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio10_2100_IPSLssp585.tif"))
+bio11<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio11_2100_IPSLssp585.tif"))
+bio15<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio15_2100_IPSLssp585.tif"))
+bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio18_2100_IPSLssp585.tif"))
+bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio19_2100_IPSLssp585.tif"))
+
+
+names(bio2) = 'BIO2_2100'
+names(bio10) = 'BIO10_2100'
+names(bio11) = 'BIO11_2100'
+names(bio15) = 'BIO15_2100'
+names(bio18) = 'BIO18_2100'              
+names(bio19) = 'BIO19_2100'
+
+
+#stack bio clim variables
+
+bioclim_2071_2100<- stack(c(bio2, bio10, bio11, bio18, bio19))
+
+######## project ensambled model on future scenarios
+
+myBiomodEMProj   <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM,
+                                             proj.name = 'CurrentEM',
+                                             new.env = bioclim_2071_2100,
                                              models.chosen = 'all',
                                              metric.binary = 'all',
                                              metric.filter = 'all')
