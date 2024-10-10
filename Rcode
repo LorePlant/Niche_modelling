@@ -17,12 +17,12 @@ library(tidyr)
 #open the raster from the directory without downloading it everytime
 
 
-bio2<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio2_studyarea_ext.tif"))
-bio10<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio10_studyarea_ext.tif"))
-bio11<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio11_studyarea_ext.tif"))
-bio15<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio15_studyarea_ext.tif"))
-bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio18_studyarea_ext.tif"))
-bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/biovar_studyarea/bio19_studyarea_ext.tif"))
+bio2<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio2_current_studyarea.tif"))
+bio10<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio10_current_studyarea.tif"))
+bio11<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio11_current_studyarea.tif"))
+bio15<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio15_current_studyarea.tif"))
+bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio18_current_studyarea.tif"))
+bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio19_current_studyarea.tif"))
 
 
 names(bio2) = 'BIO2'
@@ -37,7 +37,7 @@ names(bio19) = 'BIO19'
 
 bioclim_current<- stack(c(bio2, bio10, bio11, bio18, bio19))
 
-plot(bioclim_sub,add = TRUE, xlim = c(-18,15), ylim = c(20, 55))
+plot(bioclim_current,add = TRUE, xlim = c(-18,15), ylim = c(20, 55))
 
 
 
@@ -51,7 +51,7 @@ locations = read.csv("locations.csv", header=TRUE)
 Olive_data = BIOMOD_FormatingData(resp.var=locations$P.A, 
                                   expl.var=bioclim_current,
                                   resp.xy= locations[,c("long","lat")],
-                                  resp.name = "P.A",
+                                  resp.name = "West_med",
                                   PA.nb.rep = 3,
                                   PA.nb.absence = 500,
                                   PA.strategy = "random")
