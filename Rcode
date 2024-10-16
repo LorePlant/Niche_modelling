@@ -155,12 +155,12 @@ plot(prova)
 ### load future environmental variables
 
 
-bio2_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio2_2100_IPSLssp585.tif"))
-bio10_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio10_2100_IPSLssp585.tif"))
-bio11_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio11_2100_IPSLssp585.tif"))
-bio15_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio15_2100_IPSLssp585.tif"))
-bio18_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio18_2100_IPSLssp585.tif"))
-bio19_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/IPSL(france)/IPSLssp585/bio19_2100_IPSLssp585.tif"))
+bio2_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/MPI_ESM/ssp585/bio2_MPI_ssp585_2100_westmed.tif"))
+bio10_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/MPI_ESM/ssp585/bio10_MPI_ssp585_2100_westmed.tif"))
+bio11_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/MPI_ESM/ssp585/bio11_MPI_ssp585_2100_westmed.tif"))
+bio15_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/MPI_ESM/ssp585/bio15_MPI_ssp585_2100_westmed.tif"))
+bio18_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/MPI_ESM/ssp585/bio18_MPI_ssp585_2100_westmed.tif"))
+bio19_2100<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/future_clim_2071_2100/MPI_ESM/ssp585/bio19_MPI_ssp585_2100_westmed.tif"))
 
 
 names(bio2_2100) = 'BIO2'
@@ -178,7 +178,7 @@ bioclim_2071_2100<- stack(c(bio2_2100, bio10_2100, bio11_2100, bio18_2100, bio19
 ######## project ensambled model on future scenarios
 
 myBiomodEMProj_2100   <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM,
-                                             proj.name = '2071_2100_EM',
+                                             proj.name = 'MPI_2071_2100_EM',
                                              new.env = bioclim_2071_2100,
                                              models.chosen = 'all',
                                              metric.binary = 'all',
