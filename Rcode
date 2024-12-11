@@ -1,4 +1,4 @@
-setwd("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/niche_modelling")
+setwd("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino24/ENM_422")
 install.packages("biomod2", dependencies = TRUE)
 install.packages("rasterVis")
 install.packages("geodata")
@@ -25,12 +25,12 @@ bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/Ge
 bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio19_current_studyarea.tif"))
 
 
-names(bio2) = 'BIO2'
-names(bio10) = 'BIO10'
-names(bio11) = 'BIO11'
-names(bio15) = 'BIO15'
-names(bio18) = 'BIO18'              
-names(bio19) = 'BIO19'
+names(bio2) = 'bio2'
+names(bio10) = 'bio10'
+names(bio11) = 'bio11'
+names(bio15) = 'bio15'
+names(bio18) = 'bio18'              
+names(bio19) = 'bio19'
 
 
 #stack bio clim variables
@@ -43,11 +43,11 @@ plot(bioclim_current,add = TRUE, xlim = c(-18,15), ylim = c(20, 55))
 
 #spatial grid
 
-coord_r<-rasterToPoints(bioclim_sub, spatial = TRUE)
+coord_r<-rasterToPoints(bioclim_current, spatial = TRUE)
 map_pts<-data.frame(x = coordinates(coord_r)[,1], y=coordinates(coord_r)[,2], coord_r@data)
 
 #format data with pseudo absence
-locations = read.csv("locations.csv", header=TRUE)
+locations = read.csv("422_Olive.csv", header=TRUE)
 Olive_data = BIOMOD_FormatingData(resp.var=locations$P.A, 
                                   expl.var=bioclim_current,
                                   resp.xy= locations[,c("long","lat")],
