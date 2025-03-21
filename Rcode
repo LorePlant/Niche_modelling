@@ -17,27 +17,32 @@ library(tidyr)
 #open the raster from the directory without downloading it everytime
 
 
-bio2<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio2_current_studyarea.tif"))
-bio10<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio10_current_studyarea.tif"))
-bio11<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio11_current_studyarea.tif"))
-bio15<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio15_current_studyarea.tif"))
-bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio18_current_studyarea.tif"))
-bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Current_biovariable/West_Med_raster/bio19_current_studyarea.tif"))
-
-
+bio2<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/bio2_current_masked.tif"))
+bio10<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/bio10_current_masked.tif"))
+bio11<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/bio11_current_masked.tif"))
+bio15<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/bio15_current_masked.tif"))
+bio18<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/bio18_current_masked.tif"))
+bio19<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/bio19_current_masked.tif"))
+soilN<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/resampled_soilN.tif"))
+soilpH<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/resampled_soilpH.tif"))
+soilclay<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/resampled_soilclay.tif"))
+soilsand<- raster(paste("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/rasters_med/resampled_soilsand.tif"))
 names(bio2) = 'bio2'
 names(bio10) = 'bio10'
 names(bio11) = 'bio11'
 names(bio15) = 'bio15'
-names(bio18) = 'bio18'              
+names(bio18) = 'bio18'
 names(bio19) = 'bio19'
+names(soilN ) = 'N'
+names(soilpH) = 'pH'
+names(soilclay) = 'clay'
+names(soilsand) = 'sand'
 
 
 #stack bio clim variables
 
-bioclim_current<- stack(c(bio2, bio10, bio11, bio18, bio19))
+ras_current_var<-stack(c(bio2,bio10, bio11, bio15, bio18, bio19, soilclay,soilN,soilpH, soilsand))
 
-plot(bioclim_current,add = TRUE, xlim = c(-18,15), ylim = c(20, 55))
 
 
 
@@ -139,7 +144,7 @@ bm_PlotResponseCurves(bm.out = Olive_EM,
 
 myBiomodEMProj   <- BIOMOD_EnsembleForecasting(bm.em = Olive_EM,
                                              proj.name = 'CurrentEM_ent',
-                                             new.env = bioclim_current,
+                                             new.env = ras_current_var,
                                              models.chosen = 'all',
                                              metric.binary = 'all',
                                              metric.filter = 'all')
