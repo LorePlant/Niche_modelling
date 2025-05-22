@@ -82,6 +82,10 @@ Olive_niches<- BIOMOD_Modeling(bm.format = Olive_data,
 
 Olive_niches
 
+## reopen the model
+Olive_niches <- get(load("/storage/replicated/cirad/projects/CLIMOLIVEMED/results/GenomicOffsets/Lorenzo/Leccino_new_genome24/ENM_medit/West.med.clim.soil/West.med.clim.soil.Single_Olive_niche_maxent.models.out"))
+
+
 # Get evaluation scores & variables importance
 get_evaluations(Olive_niches)
 get_variables_importance(Olive_niches)
